@@ -13,14 +13,13 @@ export const findAll = catchAsync(async (req, res, next) => {
   if (search && search.trim().length > 0) {
     whereFilter[Op.or] = [
       { nombre: { [Op.like]: `%${search}%` } },
-      { apellido: { [Op.like]: `%${search}%` } },
       { email: { [Op.like]: `%${search}%` } },
-      { celular: { [Op.like]: `%${search}%` } },
+      { telefono: { [Op.like]: `%${search}%` } },
     ];
   }
 
   if (rol) {
-    whereFilter.rol = rol;
+    whereFilter.role = rol;
   }
 
   const offset = (page - 1) * limit;
@@ -54,7 +53,7 @@ export const findOne = catchAsync(async (req, res, next) => {
 });
 
 export const signup = catchAsync(async (req, res, next) => {
-  const { nombre, email, fecha_nacimiento, password, sexo, telefono } =
+  const { nombre, email, fecha_nacimiento, password, sexo, telefono, role } =
     req.body;
 
   const purgarCorreo = email.trim().toLowerCase().replace(/\s+/g, '');
@@ -69,6 +68,7 @@ export const signup = catchAsync(async (req, res, next) => {
     password: encryptedPassword,
     sexo,
     telefono,
+    role,
   });
 
   res.status(201).json({
@@ -107,7 +107,7 @@ export const login = catchAsync(async (req, res, next) => {
 
 export const update = catchAsync(async (req, res, next) => {
   const { user } = req;
-  const { nombre, email, fecha_nacimiento, newpassword, sexo, telefono } =
+  const { nombre, email, fecha_nacimiento, newpassword, sexo, telefono, role } =
     req.body;
 
   const purgarCorreo = email.trim().toLowerCase().replace(/\s+/g, '');
@@ -124,9 +124,10 @@ export const update = catchAsync(async (req, res, next) => {
     nombre,
     email: purgarCorreo,
     fecha_nacimiento,
-    password: newpassword || user.password,
+    password: encryptedPassword || user.password,
     sexo,
     telefono,
+    role,
   });
 
   res.status(201).json({
