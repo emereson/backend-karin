@@ -9,6 +9,11 @@ const Formato = db.define('formato', {
     type: DataTypes.INTEGER,
   },
 
+  interface_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+
   formato_url: {
     type: DataTypes.TEXT,
     allowNull: false,

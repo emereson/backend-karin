@@ -5,9 +5,9 @@ import * as materialApoyoMiddleware from './material_apoyo.middleware.js';
 
 const router = express.Router();
 
-router.get('/', materialApoyoController.findAll);
+router.get('/all/:id', materialApoyoController.findAll);
 router.post(
-  '/',
+  '/:id',
   upload.single('material_apoyo'),
   materialApoyoController.create
 );

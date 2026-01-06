@@ -2,9 +2,13 @@ import axios from 'axios';
 import { catchAsync } from '../../../utils/catchAsync.js';
 import FormData from 'form-data';
 import { Formato } from './formato.model.js';
+import { uploadImage } from '../../../utils/serverImage.js';
 
 export const findAll = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
   const formato = await Formato.findOne({
+    where: { interface_id: id },
     order: [['createdAt', 'DESC']],
   });
 
@@ -31,30 +35,18 @@ export const findOne = catchAsync(async (req, res, next) => {
 });
 
 export const create = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
   let file_path = null;
 
   if (req.file) {
     const file = req.file;
-    const formDataImg = new FormData();
-    formDataImg.append('image', file.buffer, {
-      filename: file.originalname,
-    });
-
-    const responseImg = await axios.post(
-      `${process.env.SERVER_IMAGE}/image`,
-      formDataImg,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }
-    );
-
-    file_path = responseImg.data.imagePath;
+    file_path = await uploadImage(file);
   }
 
   const formato = await Formato.create({
     formato_url: file_path,
+    interface_id: id,
   });
 
   res.status(201).json({

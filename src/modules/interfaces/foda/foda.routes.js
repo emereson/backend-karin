@@ -5,8 +5,8 @@ import { upload } from '../../../utils/multer.js';
 
 const router = express.Router();
 
-router.get('/', fodaController.findAll);
-router.post('/', fodaController.create);
+router.get('/all/:id', fodaController.findAll);
+router.post('/:id', fodaController.create);
 router.post(
   '/documento/:id',
   upload.single('documento'),

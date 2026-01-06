@@ -8,12 +8,19 @@ const Foda = db.define('foda', {
     allowNull: false,
     type: DataTypes.INTEGER,
   },
+  interface_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
   estado: {
     type: DataTypes.STRING,
     allowNull: false,
     defaultValue: 'sin documento',
   },
-
+  tipo_documento: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   colaboradora: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -23,7 +30,6 @@ const Foda = db.define('foda', {
     allowNull: true,
     defaultValue: 'sin documento',
   },
-
   nivel: {
     type: DataTypes.STRING,
     allowNull: false,

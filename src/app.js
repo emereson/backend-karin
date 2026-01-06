@@ -8,12 +8,14 @@ import xss from 'xss-clean';
 
 import { AppError } from './utils/AppError.js';
 
-import { globalErrorHandler } from './utils/error.controllers.js';
-import { formatoRouter } from './modules/moduloFoda/formato/formato.routes.js';
-import { archivosFodaRouter } from './modules/moduloFoda/archivosFoda/archivosFoda.routes.js';
-import { materialApoyoRouter } from './modules/moduloFoda/material_apoyo/material_apoyo.routes.js';
-import { fodaRouter } from './modules/moduloFoda/foda/foda.routes.js';
-import { fodaNotaRouter } from './modules/moduloFoda/fodaNota/fodaNota.routes.js';
+import { archivosFodaRouter } from './modules/interfaces/archivosFoda/archivosFoda.routes.js';
+import { materialApoyoRouter } from './modules/interfaces/material_apoyo/material_apoyo.routes.js';
+import { fodaRouter } from './modules/interfaces/foda/foda.routes.js';
+import { fodaNotaRouter } from './modules/interfaces/fodaNota/fodaNota.routes.js';
+import { globalErrorHandler } from './utils/errors.js';
+import { userRouter } from './modules/user/user.routes.js';
+import { interfaceDocRouter } from './modules/interfaces/interface/interface.routes.js';
+import { formatoRouter } from './modules/interfaces/formato/formato.routes.js';
 
 const app = express();
 
@@ -38,6 +40,9 @@ app.use(
 );
 app.use(hpp());
 app.use('/api/v1', limiter);
+app.use('/api/v1/user', userRouter);
+
+app.use('/api/v1/interface-doc', interfaceDocRouter);
 app.use('/api/v1/foda', fodaRouter);
 app.use('/api/v1/foda-nota', fodaNotaRouter);
 

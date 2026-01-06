@@ -4,9 +4,12 @@ import { Foda } from './foda.model.js';
 import axios from 'axios';
 import { CambiosFoda } from '../cambiosFoda/cambiosFoda.model.js';
 import { FodaNota } from '../fodaNota/fodaNota.model.js';
+import { uploadImage } from '../../../utils/serverImage.js';
 
 export const findAll = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
   const fodas = await Foda.findAll({
+    where: { interface_id: id },
     include: [
       { model: CambiosFoda, as: 'cambiosFoda' },
       { model: FodaNota, as: 'notas' },
@@ -30,16 +33,26 @@ export const findOne = catchAsync(async (req, res, next) => {
 });
 
 export const create = catchAsync(async (req, res, next) => {
-  const { estado, colaboradora, nivel, detalle, caduca, fecha_ingreso } =
-    req.body;
-
-  const foda = await Foda.create({
+  const { id } = req.params;
+  const {
     estado,
     colaboradora,
     nivel,
     detalle,
     caduca,
     fecha_ingreso,
+    tipo_documento,
+  } = req.body;
+
+  const foda = await Foda.create({
+    estado,
+    colaboradora,
+    interface_id: id,
+    nivel,
+    detalle,
+    caduca,
+    fecha_ingreso,
+    tipo_documento,
   });
 
   res.status(201).json({
@@ -51,8 +64,15 @@ export const create = catchAsync(async (req, res, next) => {
 
 export const update = catchAsync(async (req, res) => {
   const { foda } = req;
-  const { estado, colaboradora, nivel, detalle, caduca, fecha_ingreso } =
-    req.body;
+  const {
+    estado,
+    colaboradora,
+    nivel,
+    detalle,
+    caduca,
+    fecha_ingreso,
+    tipo_documento,
+  } = req.body;
 
   await foda.update({
     estado,
@@ -61,6 +81,7 @@ export const update = catchAsync(async (req, res) => {
     detalle,
     caduca,
     fecha_ingreso,
+    tipo_documento,
   });
 
   return res.status(200).json({
@@ -77,22 +98,7 @@ export const cargarDocumento = catchAsync(async (req, res, next) => {
 
   if (req.file) {
     const file = req.file;
-    const formDataImg = new FormData();
-    formDataImg.append('image', file.buffer, {
-      filename: file.originalname,
-    });
-
-    const responseImg = await axios.post(
-      `${process.env.SERVER_IMAGE}/image`,
-      formDataImg,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }
-    );
-
-    file_path = responseImg.data.imagePath;
+    file_path = await uploadImage(file);
   }
 
   await CambiosFoda.create({

@@ -5,8 +5,8 @@ import * as formatoMiddleware from './formato.middleware.js';
 
 const router = express.Router();
 
-router.get('/', formatoController.findAll);
-router.post('/', upload.single('formato'), formatoController.create);
+router.get('/all/:id', formatoController.findAll);
+router.post('/:id', upload.single('formato'), formatoController.create);
 
 router
   .route('/:id')
